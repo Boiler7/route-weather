@@ -1,13 +1,13 @@
-package com.boiler.weatherwatcher2;
+package com.boiler.weatherwatcher;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WeatherWatcher2Application {
+public class WeatherWatcherApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WeatherWatcher2Application.class, args);
+        SpringApplication.run(WeatherWatcherApplication.class, args);
     }
 
 }

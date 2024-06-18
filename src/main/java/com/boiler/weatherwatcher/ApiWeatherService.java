@@ -1,4 +1,4 @@
-package com.boiler.weatherwatcher2;
+package com.boiler.weatherwatcher;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

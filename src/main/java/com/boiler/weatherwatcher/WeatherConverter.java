@@ -1,4 +1,4 @@
-package com.boiler.weatherwatcher2;
+package com.boiler.weatherwatcher;
 
 public class WeatherConverter {
     public static int convertKelvinToCelsius(double kelvin) {

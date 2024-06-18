@@ -1,4 +1,4 @@
-package com.boiler.weatherwatcher2;
+package com.boiler.weatherwatcher;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

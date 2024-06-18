@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Route</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: sans-serif;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .form {
+            position: absolute;
+            top: 6%;
+            left: 0.5%;
+            width: 300px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 1);
+            margin-top: 1%;
+            border: 1px solid black;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .form a {
+            top: 0;
+            left: 0;
+        }
+
+        .form p {
+            margin: 7px 0;
+        }
+
+        .form input {
+            width: 80%;
+            height: 25px;
+            margin-bottom: 10px;
+        }
+
+        .form button {
+            font-weight: bold;
+            padding: 10px;
+            width: 80%;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="form">
+    <div>
+        <a href="/">Clean</a>
+    </div>
+    <form id="route-form">
+        <p>First City:</p>
+        <label for="start"></label><input type="text" id="start" name="city1">
+        <p>Second City:</p>
+        <label for="end"></label><input type="text" id="end" name="city2">
+        <br>
+        <button type="button" id="submit">Submit</button>
+    </form>
+</div>
+<div id="map"></div>
+<div class="form-details-container">
+    <div id="output-distance"></div>
+    <br>
+    <div id="output-weather-details"></div>
+</div>
+
+<script th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap|" async
+        defer></script>
+<script>
+    function initMap() {
+        var directionsService = new google.maps.DirectionsService();
+        var directionsRenderer = new google.maps.DirectionsRenderer();
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 6,
+            center: {lat: 55.2057984, lng: 23.5803167}
+        });
+        directionsRenderer.setMap(map);
+
+        document.getElementById('submit').addEventListener('click', function () {
+            var start = document.getElementById('start').value;
+            var end = document.getElementById('end').value;
+            calculateAndDisplayRoute(directionsService, directionsRenderer, start, end);
+            getWeatherData(start, end);
+        });
+    }
+
+    function calculateAndDisplayRoute(directionsService, directionsRenderer, start, end) {
+        directionsService.route({
+            origin: start,
+            destination: end,
+            travelMode: 'DRIVING'
+        }, function (response, status) {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+                var distance = response.routes[0].legs[0].distance.text;
+                document.getElementById('output-distance').innerHTML = `<p>Distance between: ${distance}</p>`;
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+    }
+
+    function getWeatherData(start, end) {
+        fetch(`/weather?city1=${start}&city2=${end}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    document.getElementById('output-weather-details').innerHTML = ``;
+                } else {
+                    document.getElementById('output-weather-details').innerHTML = `
+                    <h5>Weather Information</h5>
+                    <p>City: ${data.city1.name}</p>
+                    <p>Temperature: ${data.city1.main.temp} °C</p>
+                    <p>Weather: ${data.city1.weather[0].description}</p>
+                    <br>
+                    <p>City: ${data.city2.name}</p>
+                    <p>Temperature: ${data.city2.main.temp} °C</p>
+                    <p>Weather: ${data.city2.weather[0].description}</p>
+                    <style>
+                    .form-details-container {
+                        position: absolute;
+                        bottom: 3%;
+                        left: 0.5%;
+                        width: 300px;
+                        padding: 20px;
+                        background: rgba(255, 255, 255, 1);
+                        border: 1px solid black;
+                        z-index: 2;
+                        text-align: center;
+                    }
+                    </style>
+                `;
+                }
+            })
+            .catch(error => console.error('Error fetching weather data:', error));
+    }
+</script>
+</body>
+</html>

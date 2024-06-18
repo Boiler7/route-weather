@@ -1,4 +1,4 @@
-package com.boiler.weatherwatcher2;
+package com.boiler.weatherwatcher;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,9 +47,6 @@ public class WeatherController {
 
         weatherData.put("city1", weatherService.getWeatherAndModifyTemperature(city1));
         weatherData.put("city2", weatherService.getWeatherAndModifyTemperature(city2));
-
-//        log.info("Weather data: {}", weatherData.get("city1"));
-//        log.info("Weather data: {}", weatherData.get("city2"));
 
         return weatherData;
     }
